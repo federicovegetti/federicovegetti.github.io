@@ -1,3 +1,16 @@
-name: Federico Vegetti
-markdown: kramdown
-permalink: /blog/:year/:month/:day/:title
+# Site settings
+title:                Federico Vegetti
+description:          researcher, data scientist
+baseurl:              ""
+
+# Build settings
+markdown:   kramdown
+
+# Accounts
+twitter_username:     fedeunderstress
+github_username:      federicovegetti
+linkedin_username:    federicovegetti
+
+
+paginate:             5
+paginate_path:        "/blog/page:num/"

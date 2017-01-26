@@ -1,0 +1,20 @@
+<nav>
+	<ul>
+		<!-- 
+		<li><a href="{{ site.baseurl }}/">/home/</a></li>
+		<li><a href="{{ site.baseurl }}/cv/">resume</a></li>
+	   	<li><a href="{{ site.baseurl }}/research/">research</a></li>
+		<li><a href="{{ site.baseurl }}/teaching/">teaching</a></li>
+		<li><a href="{{ site.baseurl }}/blog/">blog</a></li>
+		-->
+		{% for nav in site.data.navs %}
+			{% if page.url contains nav.url %}
+				<li><a href="{{ nav.url | prepend: site.baseurl }}" class="active">{{ nav.title }}</a></li>
+            {% else %}
+            	<li><a href="{{ nav.url | prepend: site.baseurl }}">{{ nav.title }}</a></li>
+            {% endif %}
+        {% endfor %}
+	</ul>
+</nav>
+
+

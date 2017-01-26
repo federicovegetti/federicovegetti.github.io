@@ -2,8 +2,18 @@
 layout: default
 ---
 <h1>{{ page.title }}</h1>
-<p class="meta">{{ page.date | date_to_string }}</p>
+
+<p class="post-meta">
+    {% if page.categories.size > 0 %}
+    	<a class="categories" href="{{ site.url }}{{ site.baseurl }}/categories/index.html#{{ page.categories | cgi_encode }}" data-toggle="tooltip" rel="tag">{{ page.categories | array_to_sentence_string }}</a> |
+    {% endif %}
+    <time class="post-date" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
+	{{ page.date | date_to_string }}
+    </time>
+</p>
 
 <div class="post">
-  {{ content }}
+	
+	{{ content }}
+
 </div>

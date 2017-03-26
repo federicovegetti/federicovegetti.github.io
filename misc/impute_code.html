@@ -1,0 +1,61 @@
+---
+layout: default
+title: Imputarion procedure
+---
+
+<pre class="r"><code>library(MASS)
+
+# Recode completed education in 3 categories
+data$edu &lt;- NA
+data$edu[data$YQ18_II == 1 | data$YQ18_II == 2] &lt;- 1
+data$edu[data$YQ18_II == 3 | data$YQ18_II == 4 | data$YQ18_II == 5] &lt;- 2
+data$edu[data$YQ18_II == 6 | data$YQ18_II == 7] &lt;- 3
+
+# Recode education to be finished (just drop NAs)
+data$edu.s &lt;- ifelse(data$YQ18_I &gt; 0, data$YQ18_I, NA)
+
+# Recode age (drop NAs)
+data$age &lt;- ifelse(data$YQ1 &gt; 0, data$YQ1, NA)
+
+# Make a dummy for female respondents
+data$female &lt;- ifelse(data$YQ42 == 2, 1, 0)
+
+# Training data
+data.t &lt;- data[data$CCODE != 1756 &amp; data$CCODE != 1792, ]
+
+# Model on training data
+mod.t &lt;- polr(factor(edu) ~ factor(edu.s) + factor(age) + female,
+              Hess = T, 
+              data = data.t)
+summary(mod.t)
+
+# How many cases correctly classified?
+data.t$edu.pred &lt;- predict(mod.t, newdata = data.t[, c(&quot;edu.s&quot;, &quot;age&quot;, &quot;female&quot;)])
+tab.t &lt;- with(data.t, table(edu, edu.pred))
+round(sum(diag(tab.t))/sum(tab.t), 2) # 0.76 - NOT BAD
+
+# Impute the data
+pred.new.dat &lt;- data.frame(cbind(data[data$CCODE == 1756 | 
+				      data$CCODE == 1792, 
+				 c(&quot;YRESID&quot;,&quot;edu&quot;)],
+                                 predict(mod.t, 
+                                         newdata = data[data$CCODE == 1756 | 
+                                         		data$CCODE == 1792,  
+                                                        c(&quot;edu.s&quot;, &quot;age&quot;, &quot;female&quot;)])
+                      ))
+names(pred.new.dat) &lt;- c(&quot;YRESID&quot;, &quot;edu&quot;, &quot;edu.pred&quot;)
+pred.new.dat$edu.p &lt;- ifelse(is.na(pred.new.dat$edu), pred.new.dat$edu.pred, pred.new.dat$edu)
+
+data &lt;- merge(data, pred.new.dat[, c(&quot;YRESID&quot;, &quot;edu.p&quot;)], by = &quot;YRESID&quot;, all.x = T)
+data$edu.imp &lt;- ifelse(data$CCODE == 1756 &amp; is.na(data$edu) |
+                         data$CCODE == 1792 &amp; is.na(data$edu),
+                       1, 0)
+data$edu &lt;- ifelse(data$CCODE == 1756 &amp; is.na(data$edu) |
+                     data$CCODE == 1792 &amp; is.na(data$edu),
+                   data$edu.p, data$edu)
+
+# Remove additional variables and objects
+data &lt;- data[, -which(names(data) %in% c(&quot;edu.s&quot;, &quot;age&quot;, &quot;female&quot;, &quot;edu.p&quot;))]
+rm(pred.new.dat)
+rm(data.t, tab.t)
+rm(mod.t)</code></pre>

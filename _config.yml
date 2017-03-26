@@ -4,7 +4,8 @@ description:          researcher, data scientist
 baseurl:              ""
 
 # Build settings
-markdown:   kramdown
+markdown:     kramdown
+highlighter:  rogue
 
 # Accounts
 twitter_username:     fedeunderstress

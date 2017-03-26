@@ -5,7 +5,7 @@ baseurl:              ""
 
 # Build settings
 markdown:     kramdown
-highlighter:  rogue
+highlighter:  rouge
 
 # Accounts
 twitter_username:     fedeunderstress

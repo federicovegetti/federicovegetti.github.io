@@ -1,4 +1,8 @@
 /* main */
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 60px auto;
     width: 60%;

@@ -1,6 +1,6 @@
 # Site settings
 title:                Federico Vegetti
-description:          political and behavioral data scientist
+#description:          political and behavioral data scientist
 baseurl:              ""
 
 # Build settings
